@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Star Wars Films</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            
+
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        table {
+          border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #2c2a2a;
+
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #181717;
+            border-right: 1px solid #121111;
+            
+        }
+
+        th {
+          background-color: #a0e9fc;
+        }
+
+        .film-title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .opening-crawl {
+            white-space: pre-wrap;
+        }
+
+        .details {
+            text-align: right;
+            font-size: 0.8em;
+            color: #151313;
+        }
+
+        .details a {
+            color: #2c0dde;
+            text-decoration: none;
+        }
+
+        .details a:hover {
+            text-decoration: underline;
+        }
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        #loading-overlay img {
+            width: 100px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Star Wars Films</h1>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Director</th>
+            <th>Release Date</th>
+            <th>Opening Crawl</th>
+            <th>Details</th>
+        </tr>
+        <!-- Film rows will be dynamically generated here -->
+    </table>
+    <div id="loading-overlay">
+      <img src="https://miro.medium.com/max/1400/1*Gvgic29bgoiGVLmI6AVbUg.gif" alt="Loading..." />
+  </div>
+  <div id="data-container">
+      
+  </div>
+
+    <script>
+        // Fetch film data from the server
+        fetch('https://swapi.dev/api/films/')
+            .then(response => response.json())
+            .then(data => {
+                const films = data.results;
+                const tableBody = document.querySelector('table');
+
+                films.forEach(film => {
+                    const row = document.createElement('tr');
+
+                    const titleCell = document.createElement('td');
+                    titleCell.innerHTML = `<span class="film-title">${film.title}</span>`;
+                    row.appendChild(titleCell);
+
+                    const directorCell = document.createElement('td');
+                    directorCell.textContent = film.director;
+                    row.appendChild(directorCell);
+
+                    const releaseDateCell = document.createElement('td');
+                    releaseDateCell.textContent = film.release_date;
+                    row.appendChild(releaseDateCell);
+
+                    const openingCrawlCell = document.createElement('td');
+                    openingCrawlCell.innerHTML = `<p class="opening-crawl">${film.opening_crawl}</p>`;
+                    row.appendChild(openingCrawlCell);
+
+                    const detailsCell = document.createElement('td');
+                    const detailsLink = document.createElement('a');
+                    detailsLink.href = film.url;
+                    detailsLink.textContent = 'More Details';
+                    detailsCell.appendChild(detailsLink);
+                    row.appendChild(detailsCell);
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.log(error));
+           // Simulating data loading delay
+        setTimeout(function() {
+            document.getElementById('loading-overlay').style.display = 'none';
+            document.getElementById('data-container').style.display = 'block';
+        }, 3000);  
+
+    </script>
+</body>
+</html>
